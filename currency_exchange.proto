@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "currency.exchange.gen";
+option java_outer_classname = "CurrencyExchangeProto";
+
+enum Currency {
+    EUR = 0;
+    GBP = 1;
+    CHF = 2;
+}
+
+message CurrencyUpdatesSubscriptionRequest {
+    repeated Currency crrencyToObserve = 1;
+}
+
+message CurrencyUpdate {
+    Currency currency = 1;
+    float value = 2;
+}
+
+service CurrencyExchange {
+    rpc SubscribeCurrencyUpdates(CurrencyUpdatesSubscriptionRequest) returns (stream CurrencyUpdate) {}
+}

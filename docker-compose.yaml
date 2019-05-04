@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  db-bank1:
+    build: ./database
+    command: /code/db-derby-10.14.2.0-bin/bin/startNetworkServer -h 0.0.0.0 -p 10010
+    ports:
+      - 1527:10010
+  db-bank2:
+    build: ./database
+    command: /code/db-derby-10.14.2.0-bin/bin/startNetworkServer -h 0.0.0.0 -p 10010
+    ports: 
+      - 1528:10010
+  currency-exchange:
+    build: ./currency_exchange
+    command: python -m src.modules.Server
+    volumes: 
+      - ./currency_exchange:/code
+    ports:
+      - 50051:50051
+  bank1:
+    build: 
+      context: ./bank_server
+      dockerfile: Dockerfile
+    command: bash -c "cp -f src/main/resources/configs/hibernate_1.cfg.xml hibernate.cfg.xml && cp -f src/main/resources/config.server config.server && java -jar /usr/src/app/target/bank_server-1.0-jar-with-dependencies.jar bank1"
+    volumes:
+      - ./bank_server:/code
+    ports:
+      - 10000:10000
+    depends_on:
+      - db-bank1
+      - currency-exchange
+  bank2:
+    build: 
+      context: ./bank_server
+      dockerfile: Dockerfile
+    command: bash -c "cp -f src/main/resources/configs/hibernate_2.cfg.xml hibernate.cfg.xml && cp -f src/main/resources/config.server config.server && java -jar /usr/src/app/target/bank_server-1.0-jar-with-dependencies.jar bank2"
+    volumes:
+      - ./bank_server:/code
+    ports:
+      - 10001:10000
+    depends_on:
+      - db-bank2
+      - currency-exchange
