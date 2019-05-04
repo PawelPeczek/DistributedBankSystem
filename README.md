@@ -20,7 +20,7 @@ python -m src.modules.Client
 ```
 
 It produces live stream visualisation:
-(currency_visualisation)[images/currency_visualisation.png]
+![currency_visualisation](images/currency_visualisation.png)
 
 ## Bank Server
 Bank exposes several types of services to a client:
