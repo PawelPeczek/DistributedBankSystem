@@ -99,7 +99,7 @@ public class BankClient {
         if(Math.abs(operation.getValue()) > this.state){
             throw new OperationException("Tried to withdraw more money than current state");
         }
-        this.state -= operation.getValue();
+        this.state += operation.getValue();
         this.operations.add(operation);
     }
 
